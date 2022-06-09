@@ -12,6 +12,10 @@ class Vault():
         self._username = username
         self._setup()
         self._authenticate(password, otp)
+
+    ###
+    ## Private methods
+    ###
     
     def _setup(self):
         self._env = os.environ.copy()
@@ -44,9 +48,17 @@ class Vault():
             stdout = self._stdout
         return subprocess.Popen(args_list, env=self._env, stdout=stdout, stdin=stdin)
     
+    ###
+    ## Properties
+    ###
+
     @property
     def username(self):
         return self._username
+
+    ###
+    ## Public methods
+    ###
     
     def add_note(self, note_type, note, name):
         print_content = ["printf", note]
