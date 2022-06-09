@@ -2,7 +2,7 @@ import os
 import subprocess
 from .exceptions import WrongCredentialsException
 
-class LastPass():
+class Vault():
 
     LPASS_MAIN_COMMAND = "lpass"
     LPASS_DISABLE_PINENTRY = "LPASS_DISABLE_PINENTRY"
@@ -24,16 +24,20 @@ class LastPass():
             secrets += fr"\n{otp}"
         
         secrets_command = ["printf", secrets]
-        secrets_proc = self._run_command(secrets_command)
-
         login_command = [self.LPASS_MAIN_COMMAND, "login", self.username, "--trust"]
 
-        proc = self._run_command(login_command, stdin=secrets_proc.stdout)
-        proc.communicate()
-        code = proc.wait()
+        code = self._run_piped(secrets_command, login_command, stdout=subprocess.DEVNULL)
 
         if code != 0:
             raise WrongCredentialsException(f"Invalid username, password or OTP code.")
+
+    def _run_piped(self, piped_command, main_command, stdout=None):
+        piped_proc = self._run_command(piped_command)
+        main_proc = self._run_command(main_command, stdout=stdout, stdin=piped_proc.stdout)
+
+        main_proc.communicate()
+
+        return main_proc.wait()
 
     def _run_command(self, args_list, stdout=None, stdin=None):
         if stdout is None:
@@ -43,4 +47,14 @@ class LastPass():
     @property
     def username(self):
         return self._username
+    
+    def add_note(self, note_type, note, name):
+        print_content = ["printf", note]
+        add_note_command = [self.LPASS_MAIN_COMMAND,
+                            "add",
+                            f"--note-type={note_type}",
+                            name,
+                            "--non-interactive",
+                            "--sync=now"]
 
+        self._run_piped(print_content, add_note_command)
