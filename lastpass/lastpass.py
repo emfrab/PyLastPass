@@ -2,6 +2,7 @@ import os
 import subprocess
 from .exceptions import WrongCredentialsException
 
+
 class Vault():
 
     LPASS_MAIN_COMMAND = "lpass"
@@ -13,20 +14,20 @@ class Vault():
         self._setup()
         self._authenticate(password, otp)
 
-    ###
-    ## Private methods
-    ###
-    
+    ##
+    # Private methods
+    ##
+
     def _setup(self):
         self._env = os.environ.copy()
         self._env[self.LPASS_DISABLE_PINENTRY] = self.PINENTRY_DISABLED
         self._stdout = subprocess.PIPE
-    
+
     def _authenticate(self, password, otp=None):
         secrets = password
         if otp:
             secrets += fr"\n{otp}"
-        
+
         secrets_command = ["printf", secrets]
         login_command = [self.LPASS_MAIN_COMMAND, "login", self.username, "--trust"]
 
@@ -47,19 +48,19 @@ class Vault():
         if stdout is None:
             stdout = self._stdout
         return subprocess.Popen(args_list, env=self._env, stdout=stdout, stdin=stdin)
-    
-    ###
-    ## Properties
-    ###
+
+    ##
+    # Properties
+    ##
 
     @property
     def username(self):
         return self._username
 
-    ###
-    ## Public methods
-    ###
-    
+    ##
+    # Public methods
+    ##
+
     def add_note(self, note_type, note, name):
         print_content = ["printf", note]
         add_note_command = [self.LPASS_MAIN_COMMAND,
