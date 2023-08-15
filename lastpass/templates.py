@@ -8,4 +8,4 @@ SSH_KEY = (r"\nBit Strength:{bit_strenght}"
            r"\nPublic Key:{public_key}"
            r"\nHostname:{hostname}"
            r"\nDate:{date}"
-           r"\nNotes:{notes}")
+           r"\nNotes:\n{notes}")
