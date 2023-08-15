@@ -15,10 +15,12 @@ Simple API for [LastPass](https://www.lastpass.com/) password manager. Only comp
 
 Copy package manually and import.
 
+Basic usage:
+
 ```py
 >>> from lastpass import Vault
 >>> from getpass import getpass
->>> vault = Vault("example@gmail.com")
+>>> vault = Vault("example@email.com")
 >>> password = getpass("Type vault password: ")
 Type vault password:
 >>> vault.login(password)                                                                                                                                                                                                                                                                                                        
@@ -26,4 +28,9 @@ Type vault password:
 ...     print(item)
 ...
 MyFolder/Password [id: 291119914326505545776]
+>>> print(vault.show(path=r'MyFolder\\Password'))
+site.com [id: 291119914326505545776]
+Username: example@email.com
+Password: password
+URL: http://site.com
 ```
