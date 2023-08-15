@@ -4,7 +4,3 @@ class LastPassException(Exception):
 
 class WrongCredentialsException(LastPassException):
     pass
-
-
-class UserNotLoggedInException(LastPassException):
-    pass
